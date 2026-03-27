@@ -166,7 +166,7 @@
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+  function startApp() {
   
   const IS_APP = typeof window.AppInventor !== "undefined";
   console.log("Modo AppInventor:", IS_APP);
@@ -674,8 +674,8 @@ function triggerAlarm(med) {
     localStorage.setItem('historyLogs', JSON.stringify(historyLogs));
   }
 
-});
-
+}
+setTimeout(startApp, 500);
   </script>
 </body>
 </html>
