@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recordatorio de Medicamentos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="top-bar">
+      <h1><span class="material-symbols-outlined">medical_services</span> VitaliApp</h1>
+      <div class="date-display" id="current-date">--/--/----</div>
+    </header>
+
+    <main class="content-area">
+      <!-- DASHBOARD VIEW -->
+      <section id="dashboard" class="view active">
+        <div class="section-header">
+          <h2>Próximas Tomas</h2>
+          <p>Tus medicamentos para hoy</p>
+        </div>
+        <div id="upcoming-list" class="cards-container">
+          <!-- Upcoming cards will be injected here -->
+        </div>
+      </section>
+
+      <!-- MEDICATIONS VIEW -->
+      <section id="medications" class="view">
+        <div class="section-header">
+          <h2>Mis Medicamentos</h2>
+          <p>Gestiona tu tratamiento</p>
+        </div>
+        <div id="medications-list" class="cards-container">
+          <!-- Medication cards will be injected here -->
+        </div>
+        <button class="fab" id="btn-add-med" aria-label="Agregar">
+          <span class="material-symbols-outlined">add</span>
+        </button>
+      </section>
+
+      <!-- HISTORY VIEW -->
+      <section id="history" class="view">
+        <div class="section-header">
+          <h2>Historial</h2>
+          <p>Registro de tomas</p>
+        </div>
+        <div id="history-list" class="cards-container">
+          <!-- History logs will be injected here -->
+        </div>
+      </section>
+    </main>
+
+    <!-- NAVIGATION BAR -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-target="dashboard">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>Inicio</span>
+      </button>
+      <button class="nav-item" data-target="medications">
+        <span class="material-symbols-outlined">pill</span>
+        <span>Medicinas</span>
+      </button>
+      <button class="nav-item" data-target="history">
+        <span class="material-symbols-outlined">history</span>
+        <span>Historial</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- MODAL: ADD / EDIT MEDICATION -->
+  <div id="med-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">Agregar Medicamento</h3>
+        <button id="btn-close-modal" class="icon-btn"><span class="material-symbols-outlined">close</span></button>
+      </div>
+      <form id="med-form">
+        <input type="hidden" id="med-id">
+        <div class="form-group">
+          <label for="med-name">Nombre</label>
+          <input type="text" id="med-name" required placeholder="Ej. Paracetamol">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="med-dose">Dosis</label>
+            <input type="number" id="med-dose" required placeholder="Ej. 1" min="0.1" step="0.1">
+          </div>
+          <div class="form-group">
+            <label for="med-type">Unidad</label>
+            <select id="med-type">
+              <option value="pastillas">Pastillas</option>
+              <option value="ml">ml</option>
+              <option value="grms">grms</option>
+              <option value="gotas">Gotas</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="med-freq">Frecuencia (horas)</label>
+            <input type="number" id="med-freq" required placeholder="Ej. 8" min="1">
+          </div>
+          <div class="form-group">
+            <label for="med-time">Primera toma</label>
+            <input type="time" id="med-time" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Color identificador</label>
+          <div class="color-picker" id="med-colors">
+            <input type="radio" name="med-color" value="#ff4757" id="c1" checked><label for="c1" style="--c:#ff4757"></label>
+            <input type="radio" name="med-color" value="#2ed573" id="c2"><label for="c2" style="--c:#2ed573"></label>
+            <input type="radio" name="med-color" value="#1e90ff" id="c3"><label for="c3" style="--c:#1e90ff"></label>
+            <input type="radio" name="med-color" value="#ffa502" id="c4"><label for="c4" style="--c:#ffa502"></label>
+            <input type="radio" name="med-color" value="#9b59b6" id="c5"><label for="c5" style="--c:#9b59b6"></label>
+            <input type="radio" name="med-color" value="#34495e" id="c6"><label for="c6" style="--c:#34495e"></label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="med-desc">Descripción (opcional)</label>
+          <textarea id="med-desc" rows="2" placeholder="Ej. Tomar después de comer"></textarea>
+        </div>
+        <button type="submit" class="btn-primary">Guardar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: LOGIN -->
+  <div id="login-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="login-title">Autenticación Requerida</h3>
+        <button id="btn-close-login" class="icon-btn"><span class="material-symbols-outlined">close</span></button>
+      </div>
+      <form id="login-form">
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">
+          Ingresa la contraseña para modificar medicamentos (Por defecto: 1234)
+        </p>
+        <div class="form-group">
+          <label for="login-pass">Contraseña</label>
+          <input type="password" id="login-pass" required placeholder="****">
+        </div>
+        <button type="submit" class="btn-primary">Ingresar</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
