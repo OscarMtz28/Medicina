@@ -22,19 +22,27 @@
 
 body {
   font-family: var(--font-main);
-  background: var(--bg-color);
+  background: #000; /* Darker outer bg for desktop */
   min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Prevent native bounce on iOS */
 }
 
 /* App Container acting like a mobile screen */
 .app-container {
   width: 100%;
+  max-width: 500px; /* Constrain width to look good on tablets/web too */
   height: 100vh;
+  height: 100dvh; /* Dynamic height for mobile browsers (fixes nav clipping) */
   display: flex;
   flex-direction: column;
   position: relative;
   background: radial-gradient(circle at top right, #1e293b, #0f172a);
   overflow: hidden;
+  box-shadow: 0 0 30px rgba(0,0,0,0.8);
 }
 
 /* Typography & Utilities */
