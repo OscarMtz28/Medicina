@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const IS_APP = typeof window.AppInventor !== "undefined";
+  console.log("Modo AppInventor:", IS_APP);
   // State
   let medications = JSON.parse(localStorage.getItem('medications')) || [];
   let historyLogs = JSON.parse(localStorage.getItem('historyLogs')) || [];
@@ -29,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderAll();
 
   // Notification / Alarm Logic
-  setInterval(checkAlarms, 60000); // Check every minute
+  setInterval(checkAlarms, 15000); // Check every minute
   checkAlarms();
 
   function checkAlarms() {
@@ -48,24 +50,22 @@ document.addEventListener('DOMContentLoaded', () => {
     if (updated) saveData();
   }
 
-  function triggerAlarm(med) {
-    // Show standard browser alert
-    alert(`¡Notificación de MedRemind!\n\nEs hora de tomar: ${med.name}\nDosis: ${med.dose} ${med.type}`);
-    
-    // Try to show system notification
-    if ("Notification" in window && Notification.permission === "granted") {
-      new Notification("¡Hora de tu medicina!", {
-        body: `Toma ${med.dose} ${med.type} de ${med.name}`
-      });
-    }
+function triggerAlarm(med) {
+
+  const mensaje = `ALARMA|${med.name}|${med.dose}|${med.type}`;
+
+  // Si está dentro de MIT App Inventor
+  if (window.AppInventor) {
+    window.AppInventor.setWebViewString(mensaje);
+  } 
+  else {
+    // fallback navegador normal
+    alert(`Hora de tomar ${med.name} (${med.dose} ${med.type})`);
   }
+}
 
   // Request system notification permissions on first interaction
-  document.body.addEventListener('click', () => {
-    if ("Notification" in window && Notification.permission === "default") {
-      Notification.requestPermission();
-    }
-  }, { once: true });
+
 
   // Navigation Logic
   navItems.forEach(item => {
