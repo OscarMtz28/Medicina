@@ -1,4 +1,5 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
+  
   const IS_APP = typeof window.AppInventor !== "undefined";
   console.log("Modo AppInventor:", IS_APP);
   // State
