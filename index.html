@@ -153,6 +153,18 @@
     </div>
   </div>
 
+  <!-- APP DIALOG MODAL (For App Inventor compatibility) -->
+  <div id="dialog-overlay" class="modal-overlay hidden" style="z-index: 9999; justify-content: center; align-items: center; padding: 1rem;">
+    <div class="modal-content" style="transform: none; border-radius: 1rem; padding: 1.5rem; width: 100%; max-width: 320px;">
+      <h3 id="dialog-title" style="margin-bottom: 0.5rem; text-align: center;">Atención</h3>
+      <p id="dialog-msg" style="margin-bottom: 1.5rem; color: var(--text-secondary); text-align: center; font-size: 0.95rem;"></p>
+      <div style="display: flex; gap: 0.5rem; justify-content: center;">
+        <button id="btn-dialog-cancel" class="btn-edit" style="flex: 1; justify-content: center; display: none;">Cancelar</button>
+        <button id="btn-dialog-ok" class="btn-primary" style="flex: 1; margin-top: 0;">OK</button>
+      </div>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>

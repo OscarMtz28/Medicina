@@ -21,6 +21,33 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById('login-form');
   const btnCloseLogin = document.getElementById('btn-close-login');
   
+  // Custom Dialog Elements
+  const dialogOverlay = document.getElementById('dialog-overlay');
+  const dialogTitle = document.getElementById('dialog-title');
+  const dialogMsg = document.getElementById('dialog-msg');
+  const btnDialogCancel = document.getElementById('btn-dialog-cancel');
+  const btnDialogOk = document.getElementById('btn-dialog-ok');
+
+  function showAlert(msg, title = 'Atención') {
+    dialogTitle.textContent = title;
+    dialogMsg.textContent = msg;
+    btnDialogCancel.style.display = 'none';
+    dialogOverlay.classList.remove('hidden');
+    btnDialogOk.onclick = () => dialogOverlay.classList.add('hidden');
+  }
+
+  function showConfirm(msg, onOk, title = 'Confirmar') {
+    dialogTitle.textContent = title;
+    dialogMsg.textContent = msg;
+    btnDialogCancel.style.display = 'block';
+    dialogOverlay.classList.remove('hidden');
+    btnDialogCancel.onclick = () => dialogOverlay.classList.add('hidden');
+    btnDialogOk.onclick = () => {
+      dialogOverlay.classList.add('hidden');
+      onOk();
+    };
+  }
+
   // Containers
   const dashboardList = document.getElementById('upcoming-list');
   const medicationsList = document.getElementById('medications-list');
@@ -60,7 +87,7 @@ function triggerAlarm(med) {
   } 
   else {
     // fallback navegador normal
-    alert(`Hora de tomar ${med.name} (${med.dose} ${med.type})`);
+    showAlert(`Hora de tomar ${med.name} (${med.dose} ${med.type})`, '¡Alarma!');
   }
 }
 
@@ -104,7 +131,7 @@ function triggerAlarm(med) {
         pendingAction = null;
       }
     } else {
-      alert('Contraseña incorrecta');
+      showAlert('Contraseña incorrecta');
     }
   });
 
@@ -153,6 +180,10 @@ function triggerAlarm(med) {
       
       // Also calculate initial next pending task based on firstTime
       generatePendingTask(medData);
+
+      if (window.AppInventor) {
+        window.AppInventor.setWebViewString(`NUEVO|${medData.name}`);
+      }
     }
 
     saveData();
@@ -241,13 +272,11 @@ function triggerAlarm(med) {
       btn.addEventListener('click', (e) => {
         const id = e.currentTarget.dataset.id;
         requireAuth(() => {
-          if(confirm('¿Eliminar medicamento?')) {
+          showConfirm('¿Eliminar medicamento?', () => {
             medications = medications.filter(m => m.id !== id);
-            // Also remove pending tasks for this med in a full implementation,
-            // but here we generate dashboard from medications
             saveData();
             renderAll();
-          }
+          });
         });
       });
     });
@@ -345,6 +374,8 @@ function triggerAlarm(med) {
     const med = medications.find(m => m.id === id);
     if (!med) return;
 
+    if (window.AppInventor) window.AppInventor.setWebViewString(`TOMAR|${med.name}`);
+
     // Add to history
     const log = {
       id: Date.now().toString(),
@@ -369,6 +400,8 @@ function triggerAlarm(med) {
   function handlePostpone(id) {
     const med = medications.find(m => m.id === id);
     if (!med) return;
+
+    if (window.AppInventor) window.AppInventor.setWebViewString(`POSPONER|${med.name}`);
 
     // Add to history
     const log = {
